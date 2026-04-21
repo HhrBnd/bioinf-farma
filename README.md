@@ -1,3 +1,4 @@
+
 # BIOINF-farma Pipeline
 
 Bioinformatics pipeline for **antigenicity**, **solubility** and **stability**
@@ -25,7 +26,7 @@ with Random Forest models to produce a combined expression score.
 
 ## Pipeline overview
 
-For each `.pdb` file in the input folder, the pipeline runs:
+The pipeline accepts `.pdb` and/or `.fasta` files as input. For each input file, it runs:
 
 0. **(optional) Structure prediction** — if the input folder contains
    `.fasta` files, they are converted to `.pdb` with **Boltz-2**
