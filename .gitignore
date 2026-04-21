@@ -1,0 +1,86 @@
+# ============================================================================
+# .gitignore per pipeline_bionfarma
+# ============================================================================
+
+# --- Dati (input / output / log) --------------------------------------------
+input/
+output/
+logs/
+status/
+input_jobs/
+output_jobs/
+
+# File generati dalla pipeline (se piazzati in root)
+*.tsv
+*.pdb
+*.fasta
+*_corrected.pdb
+beppe_snapshot.AMBER.*
+rebelot_output.log
+bepipred3_output.log
+*.pml
+raw_output.csv
+solubility_scores.csv
+stability_scores.csv
+*_predicted_scores.csv
+combined_scores.tsv
+epitope_scores.tsv
+soluprot_predictions.csv
+BertThermo_output*
+TemStaPro_output*
+ProLaTherm_Predictions_*
+*_final_results.csv
+*_intermediate_results.csv
+
+# --- Modelli ML ------------------------------------------------------------
+# I modelli Random Forest aggregati (models/best_rf_model*.pkl) sono
+# committati direttamente nel repo (dimensioni piccole).
+# Escludiamo solo altri formati di modelli che potrebbero apparire in futuro.
+*.h5
+*.pt
+*.pth
+*.onnx
+*.safetensors
+
+# --- Tool di terze parti (installati separatamente) -------------------------
+tools/
+Structure_input_library/
+
+# --- Python -----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.Python
+build/
+dist/
+venv/
+.venv/
+env/
+.env
+
+# --- Jupyter / notebooks ----------------------------------------------------
+.ipynb_checkpoints/
+*.ipynb
+
+# --- Sistema operativo ------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# --- IDE --------------------------------------------------------------------
+.idea/
+.vscode/
+*.sublime-*
+
+# --- Conda ------------------------------------------------------------------
+.conda/
+
+# --- Temporanei / misc ------------------------------------------------------
+*.log
+*.tmp
+*.bak
+nohup.out
