@@ -84,3 +84,8 @@ Thumbs.db
 *.tmp
 *.bak
 nohup.out
+
+# Exception: example input files (test data)
+# Exception: example input files (test data)
+!examples/
+!examples/**
