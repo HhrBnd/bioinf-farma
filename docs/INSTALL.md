@@ -14,41 +14,43 @@ export CONDA_ROOT=$HOME/miniconda3
 
 ## 2. Conda environments
 
-The pipeline uses 9 isolated environments. You need to create them following
-each tool's own instructions. For reference, the expected names (rename them
-in `script/config.sh`) are:
+The pipeline uses 9 isolated environments. Exact specifications (with pinned
+versions) are provided as `environment.yml` files in the `envs/` folder.
+
+To create all environments at once:
 
 ```bash
-conda create -n vs_immunohub python=3.10 pandas numpy scikit-learn scipy joblib
-# ... plus specific dependencies for ag_score.py, solubility_prediction.py, etc.
-
-conda create -n boltz ...          # see Boltz-2 docs (GPU recommended)
-conda create -n rebelot ...        # see MLCE/REBELOT docs
-conda create -n bepipred ...       # see BepiPred3 docs
-conda create -n deepsolue_env ...  # see DeepSoluE docs
-conda create -n soluprot ...       # see SoluProt docs
-conda create -n BertThermo ...     # see BertThermo docs
-conda create -n temstapro_env ...  # see TemStaPro docs
-conda create -n prolatherm ...     # see ProLaTherm docs
+for env in envs/*.yml; do
+    conda env create -f "$env"
+done
 ```
 
-> **TODO**: replace these placeholders with the exact `conda create` commands
-> once the envs are stable. Alternatively, ship one `environment.yml` per
-> env (`conda env export --from-history -n <env> > envs/<env>.yml`).
-
-## 3. AMBER 24
-
-Follow the official installation guide at <https://ambermd.org/>. Only
-`pdb4amber` is actually needed, but installing full AmberTools is the
-simplest way to get it.
-
-The pipeline expects the install under
-`$TOOLS_DIR/epitope_tools/MLCE/amber24/`. You can point to a different
-location by exporting `AMBERHOME`:
+Or create them one at a time:
 
 ```bash
-export AMBERHOME=/usr/local/amber24
+conda env create -f envs/boltz.yml
+conda env create -f envs/vs_immunohub.yml
+conda env create -f envs/rebelot.yml
+conda env create -f envs/bepipred.yml
+conda env create -f envs/deepsolue_env.yml
+conda env create -f envs/soluprot.yml
+conda env create -f envs/BertThermo.yml
+conda env create -f envs/temstapro_env.yml
+conda env create -f envs/prolatherm.yml
 ```
+
+To rename an environment at creation time, override the `name:` field:
+
+```bash
+conda env create -f envs/boltz.yml -n my_boltz_env
+# then export CONDA_ENV_BOLTZ=my_boltz_env before running the pipeline
+```
+
+An extra file `envs/AmberTools23.yml` is also provided. The pipeline calls
+AMBER's `pdb4amber` directly via its binary path (see `config.sh`) rather
+than through a conda env, so strictly speaking this env is not required.
+It is included in case you prefer to use the conda-managed AmberTools23
+installation.
 
 ## 4. Third-party tools
 
