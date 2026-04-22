@@ -83,44 +83,38 @@ elsewhere, export the corresponding variables (see `script/config.sh`).
 **Preprocessing (Step 1)**
 
 - **AmberTools / pdb4amber** — https://ambermd.org/
-  Case et al., *J. Chem. Inf. Model.* 2023, doi:10.1021/acs.jcim.3c01153
+  Case et al. (2023), *Journal of Chemical Information and Modeling* 63(20):6183-6191. doi:10.1021/acs.jcim.3c01153
 
 **Epitope prediction (Step 2)**
 
 - **MLCE / REBELOT / BEPPE** — structure-based B-cell epitope prediction
   https://github.com/colombolab/MLCE
-  Scarabelli, Morra, Colombo, "Predicting Interaction Sites from the
-  Energetics of Isolated Proteins: A New Approach to Epitope Mapping",
-  Istituto di Chimica del Riconoscimento Molecolare (CNR), Milan.
-  Capelli, Serapian, Colombo (2023), "Computational Epitope Prediction and
-  Design for Antibody Development and Detection", in *Computer-Aided Antibody
-  Design*, Methods in Molecular Biology vol. 2552, doi:10.1007/978-1-0716-2609-2_13
+  Capelli et al. (2023), *Methods in Molecular Biology* 2552:255-266. doi:10.1007/978-1-0716-2609-2_13
 - **BepiPred-3.0** — sequence-based B-cell epitope prediction
-  https://github.com/UberClifford/BepiPred-3.0 (also at
-  https://services.healthtech.dtu.dk/services/BepiPred-3.0/)
-  Clifford et al., *Protein Science* 2022, doi:10.1002/pro.4497
+  https://github.com/UberClifford/BepiPred-3.0 (also at https://services.healthtech.dtu.dk/services/BepiPred-3.0/)
+  Clifford et al. (2022), *Protein Science* 31(12):e4497. doi:10.1002/pro.4497
 
 **Solubility prediction (Step 3a)**
 
 - **DeepSoluE** — https://github.com/wangchao-malab/DeepSoluE
-  Wang et al., *BMC Biology* 2023, doi:10.1186/s12915-023-01510-8
+  Wang & Zou (2023), *BMC Biology* 21:12. doi:10.1186/s12915-023-01510-8
 - **SoluProt** — https://loschmidt.chemi.muni.cz/soluprot/?page=download
-  Hon et al., *Bioinformatics* 2021, doi:10.1093/bioinformatics/btaa1102
+  Hon et al. (2021), *Bioinformatics* 37(1):23-28. doi:10.1093/bioinformatics/btaa1102
 - **Protein-Sol** — https://protein-sol.manchester.ac.uk/software
-  Hebditch et al., *Bioinformatics* 2017, doi:10.1093/bioinformatics/btx345
+  Hebditch et al. (2017), *Bioinformatics* 33(19):3098-3100. doi:10.1093/bioinformatics/btx345
 - **USEARCH** — https://www.drive5.com/usearch/
-  Edgar, *Bioinformatics* 2010, doi:10.1093/bioinformatics/btq461
+  Edgar (2010), *Bioinformatics* 26(19):2460-2461. doi:10.1093/bioinformatics/btq461
 - **TMHMM 2.0c** — https://services.healthtech.dtu.dk/services/TMHMM-2.0/
-  Krogh et al., *J. Mol. Biol.* 2001, doi:10.1006/jmbi.2000.4315
+  Krogh et al. (2001), *Journal of Molecular Biology* 305(3):567-580. doi:10.1006/jmbi.2000.4315
 
 **Stability prediction (Step 3b)**
 
 - **BertThermo** — https://github.com/zhibinlv/BertThermo
-  doi:10.3390/app13052858
+  Pei et al. (2023), *Applied Sciences* 13(5):2858. doi:10.3390/app13052858
 - **TemStaPro** — https://github.com/ievapudz/TemStaPro
-  Pudžiuvelytė et al., *Bioinformatics* 2024, doi:10.1093/bioinformatics/btae157
+  Pudžiuvelytė et al. (2024), *Bioinformatics* 40(4):btae157. doi:10.1093/bioinformatics/btae157
 - **ProLaTherm** — https://github.com/grimmlab/ProLaTherm
-  doi:10.1093/nargab/lqad087
+  Haselbeck et al. (2023), *NAR Genomics and Bioinformatics* 5(4):lqad087. doi:10.1093/nargab/lqad087
 
 > Several tools above (MLCE/REBELOT, BepiPred-3.0, SoluProt, TMHMM) are
 > free for academic use but distributed under non-commercial academic
@@ -137,20 +131,21 @@ Expected layout (renamable via `STRUCTURE_DIR`):
 
 ```
 Structure_input_library/
-├── structure_predictor_docker.py   # Boltz-2 wrapper (not shipped with the repo)
+├── structure_predictor_docker.py   # Boltz-2 wrapper 
 ├── mmseqs/bin/mmseqs               # MMseqs2 binary
 └── PDB/                            # PDB database indexed with MMseqs2
 ```
 
 Setup steps:
 
-1. Clone the wrapper repository to get `structure_predictor_docker.py`:
+1. Clone the wrapper repository that provides `structure_predictor_docker.py`:
    https://github.com/biochorl/Structure_input_library
 2. Create the `boltz` conda env following the Boltz-2 official docs:
    https://github.com/jwohlwend/boltz
+   Passaro et al. (2025), *bioRxiv*. doi:10.1101/2025.06.14.659707
 3. Install MMseqs2 under `Structure_input_library/mmseqs/`:
    https://github.com/soedinglab/MMseqs2
-   (Steinegger & Söding, *Nat. Biotechnol.* 2017, doi:10.1038/nbt.3988)
+   Steinegger & Söding (2017), *Nature Biotechnology* 35(11):1026-1028. doi:10.1038/nbt.3988
 4. Download and index the local PDB database (~500 MB).
 
 > **Internet required at runtime**: Boltz-2 calls ColabFold remotely for
