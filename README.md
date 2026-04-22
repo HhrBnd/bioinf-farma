@@ -144,6 +144,23 @@ for env in envs/*.yml; do conda env create -f "$env"; done
 See [`docs/INSTALL.md`](docs/INSTALL.md) for a detailed installation guide.
 
 ---
+## Input requirements
+
+The pipeline is validated for the following input specifications:
+
+**PDB files**
+- Standard PDB format
+- Single chain, unique conformation
+- 20–2500 amino acids
+- Protein atoms only (`ATOM` records — no `HETATM`)
+
+**FASTA files** (used as input to Step 0 for Boltz-2 structure prediction)
+- Single sequence per file
+- Standard amino acids only (20 canonical residues — no `X`, no non-standard codes)
+- At least 20 amino acids
+
+Inputs that violate these constraints may still run but results have not
+been validated.
 
 ## Usage
 
@@ -290,6 +307,37 @@ Two summary TSV files land in `output/`:
 
 - `epitope_scores.tsv` — antigenicity per PDB
 - `combined_scores.tsv` — solubility / stability / combined score per PDB
+
+### Score interpretation
+
+The pipeline produces four scores per protein:
+
+| Score | Meaning |
+|-------|---------|
+| **Antigenicity Score** | Predicted immunoreactivity (epitope potential) |
+| **Solubility Score** | Predicted probability of soluble expression |
+| **Stability Score** | Predicted probability of thermostability |
+| **Expression Efficiency Score** | Integrated producibility (`0.8 × solubility + 0.2 × stability`) |
+
+**Interpretation guide:**
+
+- **Antigenicity Score**
+  - `< 0.3` — likely non-antigenic
+  - `0.3 – 0.5` — uncertain
+  - `> 0.5` — likely antigenic
+- **Solubility Score**
+  - `< 0.5` — low solubility
+  - `> 0.5` — likely soluble
+- **Stability Score**
+  - `< 0.5` — low stability
+  - `> 0.5` — likely stable
+- **Expression Efficiency Score**
+  - `< 0.5` — expression not recommended
+  - `> 0.5` — expression potentially feasible
+
+> These thresholds are practical guidelines based on the training datasets
+> of the underlying predictors; they are not hard decision boundaries.
+> Treat borderline scores as "needs experimental validation".
 
 ---
 
