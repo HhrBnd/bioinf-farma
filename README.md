@@ -79,23 +79,33 @@ them have conflicting dependencies. The default names (rename them in
 
 ### Third-party tools
 
-Install separately under `$TOOLS_DIR` (default: `tools/`):
+Install separately under `$TOOLS_DIR` (default: `tools/`). See
+[`docs/INSTALL.md`](docs/INSTALL.md) for the full list of official sources
+and citations.
 
-- **AMBER 24** — `tools/epitope_tools/MLCE/amber24/`
-- **MLCE / REBELOT** — `tools/epitope_tools/MLCE/`
-- **BepiPred3** — `tools/epitope_tools/BepiPred3_src/`
-- **DeepSoluE** — `tools/solubility_tools/DeepSoluE/`
-- **ProteinSol** — `tools/solubility_tools/protein_sol/`
-- **SoluProt + USEARCH + TMHMM** — `tools/solubility_tools/soluprot/`
-- **BertThermo** — `tools/stability_tools/BertThermo/`
-- **TemStaPro** — `tools/stability_tools/TemStaPro/`
-- **ProLaTherm** — `tools/stability_tools/ProLaTherm/`
+**Step 1 — Preprocessing**
+- AMBER 24 (pdb4amber) — https://ambermd.org/
+
+**Step 2 — Epitope prediction**
+- MLCE / REBELOT / BEPPE — https://github.com/colombolab/MLCE
+- BepiPred-3.0 — https://github.com/UberClifford/BepiPred-3.0
+
+**Step 3a — Solubility**
+- DeepSoluE — https://github.com/wangchao-malab/DeepSoluE
+- SoluProt + USEARCH + TMHMM — https://loschmidt.chemi.muni.cz/soluprot/?page=download
+- Protein-Sol — https://protein-sol.manchester.ac.uk/software
+
+**Step 3b — Stability**
+- BertThermo — https://github.com/zhibinlv/BertThermo
+- TemStaPro — https://github.com/ievapudz/TemStaPro
+- ProLaTherm — https://github.com/grimmlab/ProLaTherm
 
 For Step 0 (optional, only if you start from FASTA):
 
-- **Boltz-2** + wrapper `structure_predictor_docker.py` + **MMseqs2** +
-  indexed PDB database, installed under `$STRUCTURE_DIR`
-  (default: `~/Structure_input_library/`)
+- **Boltz-2 wrapper** — https://github.com/biochorl/Structure_input_library
+- **Boltz-2** — https://github.com/jwohlwend/boltz
+- **MMseqs2** — https://github.com/soedinglab/MMseqs2
+- Indexed PDB database (~500 MB)
 
 > `tools/` and `Structure_input_library/` are in `.gitignore`: they are
 > external tools, not part of this repository.
@@ -122,14 +132,16 @@ cd bioinf-farma-pipeline
 # 2. Make the scripts executable
 chmod +x script/*.sh launcher.sh
 
-# 3. Install the third-party tools under tools/ (see above)
+# 3. Install the third-party tools under tools/ (see docs/INSTALL.md)
 
-# 4. Create the conda environments (see docs/INSTALL.md)
+# 4. Create the 9 conda environments at once
+for env in envs/*.yml; do conda env create -f "$env"; done
 
-# 5. Prepare input/ with your .pdb (and/or .fasta) files
-mkdir -p input output
-cp /path/to/proteins/*.pdb input/
+# 5. Try it out on the included example files
+./script/0_run_pipeline.sh -i examples -o output
 ```
+
+See [`docs/INSTALL.md`](docs/INSTALL.md) for a detailed installation guide.
 
 ---
 
@@ -214,6 +226,15 @@ bioinf-farma-pipeline/
 │   ├── best_rf_model.pkl              # solubility RF meta-learner (~20 MB)
 │   ├── best_rf_model_3tools.pkl       # stability RF meta-learner (~164 KB)
 │   └── README.md
+├── envs/                              # conda environment.yml specs
+│   ├── boltz.yml
+│   ├── vs_immunohub.yml
+│   └── ... (9 envs total + AmberTools23.yml)
+├── examples/                          # example input files (.pdb, .fasta)
+│   ├── example_input_1.pdb
+│   ├── example_input_1.fasta
+│   ├── example_input_2.pdb
+│   └── example_input_2.fasta
 └── docs/
     └── INSTALL.md                     # detailed setup guide
 ```
