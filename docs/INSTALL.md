@@ -75,8 +75,57 @@ tools/
     └── ProLaTherm/prolatherm/
 ```
 
-For each tool, follow the upstream installation instructions. If you install
-them elsewhere, export the corresponding variables (see `script/config.sh`).
+Follow each tool's upstream install instructions. If you install them
+elsewhere, export the corresponding variables (see `script/config.sh`).
+
+### Official sources and citations
+
+**Preprocessing (Step 1)**
+
+- **AmberTools / pdb4amber** — https://ambermd.org/
+  Case et al., *J. Chem. Inf. Model.* 2023, doi:10.1021/acs.jcim.3c01153
+
+**Epitope prediction (Step 2)**
+
+- **MLCE / REBELOT / BEPPE** — structure-based B-cell epitope prediction
+  https://github.com/colombolab/MLCE
+  Scarabelli, Morra, Colombo, "Predicting Interaction Sites from the
+  Energetics of Isolated Proteins: A New Approach to Epitope Mapping",
+  Istituto di Chimica del Riconoscimento Molecolare (CNR), Milan.
+  Capelli, Serapian, Colombo (2023), "Computational Epitope Prediction and
+  Design for Antibody Development and Detection", in *Computer-Aided Antibody
+  Design*, Methods in Molecular Biology vol. 2552, doi:10.1007/978-1-0716-2609-2_13
+- **BepiPred-3.0** — sequence-based B-cell epitope prediction
+  https://github.com/UberClifford/BepiPred-3.0 (also at
+  https://services.healthtech.dtu.dk/services/BepiPred-3.0/)
+  Clifford et al., *Protein Science* 2022, doi:10.1002/pro.4497
+
+**Solubility prediction (Step 3a)**
+
+- **DeepSoluE** — https://github.com/wangchao-malab/DeepSoluE
+  Wang et al., *BMC Biology* 2023, doi:10.1186/s12915-023-01510-8
+- **SoluProt** — https://loschmidt.chemi.muni.cz/soluprot/?page=download
+  Hon et al., *Bioinformatics* 2021, doi:10.1093/bioinformatics/btaa1102
+- **Protein-Sol** — https://protein-sol.manchester.ac.uk/software
+  Hebditch et al., *Bioinformatics* 2017, doi:10.1093/bioinformatics/btx345
+- **USEARCH** — https://www.drive5.com/usearch/
+  Edgar, *Bioinformatics* 2010, doi:10.1093/bioinformatics/btq461
+- **TMHMM 2.0c** — https://services.healthtech.dtu.dk/services/TMHMM-2.0/
+  Krogh et al., *J. Mol. Biol.* 2001, doi:10.1006/jmbi.2000.4315
+
+**Stability prediction (Step 3b)**
+
+- **BertThermo** — https://github.com/zhibinlv/BertThermo
+  doi:10.3390/app13052858
+- **TemStaPro** — https://github.com/ievapudz/TemStaPro
+  Pudžiuvelytė et al., *Bioinformatics* 2024, doi:10.1093/bioinformatics/btae157
+- **ProLaTherm** — https://github.com/grimmlab/ProLaTherm
+  doi:10.1093/nargab/lqad087
+
+> Several tools above (MLCE/REBELOT, BepiPred-3.0, SoluProt, TMHMM) are
+> free for academic use but distributed under non-commercial academic
+> licenses. If you plan to use this pipeline for for-profit applications,
+> check each tool's license individually.
 
 ## 5. Boltz-2 module (optional, for Step 0)
 
@@ -95,10 +144,14 @@ Structure_input_library/
 
 Setup steps:
 
-1. Create the `boltz` conda env following the Boltz-2 official docs.
-2. Install MMseqs2 under `Structure_input_library/mmseqs/`.
-3. Download and index the local PDB database (~500 MB).
-4. Place `structure_predictor_docker.py` in `Structure_input_library/`.
+1. Clone the wrapper repository to get `structure_predictor_docker.py`:
+   https://github.com/biochorl/Structure_input_library
+2. Create the `boltz` conda env following the Boltz-2 official docs:
+   https://github.com/jwohlwend/boltz
+3. Install MMseqs2 under `Structure_input_library/mmseqs/`:
+   https://github.com/soedinglab/MMseqs2
+   (Steinegger & Söding, *Nat. Biotechnol.* 2017, doi:10.1038/nbt.3988)
+4. Download and index the local PDB database (~500 MB).
 
 > **Internet required at runtime**: Boltz-2 calls ColabFold remotely for
 > MSA generation. Without a connection, Step 0 fails. If you are packaging
