@@ -8,6 +8,9 @@ The pipeline integrates structural and sequence-based B-cell epitope
 predictors, and aggregates the output of multiple solubility/stability tools
 with Random Forest models to produce a combined expression score.
 
+**Part of the [ImmunoHUB](https://immunohub.it/) consortium, 
+[Bioinf-farma lab network](https://immunohub.it/bioinf-farma-lab-network/).**
+[![ImmunoHub](https://immunohub.it/wp-content/uploads/LogoImmunoHub-300x40.png)](https://immunohub.it/)
 ---
 
 > 🌐 **Web server**: the pipeline is also available as a user-friendly web
