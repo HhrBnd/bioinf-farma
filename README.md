@@ -126,7 +126,7 @@ They are loaded automatically by the pipeline. See
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/<your-user>/bioinf-farma-pipeline.git
+git clone https://github.com/HhrBnd/bioinf-farma-pipeline.git
 cd bioinf-farma-pipeline
 
 # 2. Make the scripts executable
