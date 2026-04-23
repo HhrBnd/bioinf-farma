@@ -1,6 +1,6 @@
 #!/bin/bash
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# Copyright (C) 2026 [Your Name / Organization]
+# Copyright (C) 2023-2026 Heather Bondi, Gianluca Molla, Università degli Studi dell'Insubria
 
 # ============================================================================
 # config.sh — Configurazione centralizzata di tutta la pipeline
