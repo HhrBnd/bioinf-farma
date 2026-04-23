@@ -8,17 +8,17 @@ The pipeline integrates structural and sequence-based B-cell epitope
 predictors, and aggregates the output of multiple solubility/stability tools
 with Random Forest models to produce a combined expression score.
 
-**Part of the [ImmunoHUB](https://immunohub.it/) consortium, 
-[Bioinf-farma lab network](https://immunohub.it/bioinf-farma-lab-network/).**
-[![ImmunoHub](https://immunohub.it/wp-content/uploads/LogoImmunoHub-300x40.png)](https://immunohub.it/)
----
-
 > 🌐 **Web server**: the pipeline is also available as a user-friendly web
 > interface at **[www.bioinf-farma.uninsubria.it](https://www.bioinf-farma.uninsubria.it)**.
-> No installation required — just upload your PDB or FASTA file.
+> No installation required
+> just upload your PDB or FASTA file.
+
+**Part of the [![ImmunoHub](https://immunohub.it/wp-content/uploads/LogoImmunoHub-300x40.png)](https://immunohub.it/) consortium, 
+[Bioinf-farma lab network](https://immunohub.it/bioinf-farma-lab-network/).**
 
 
 ---
+
 
 ## Table of contents
 
@@ -368,6 +368,31 @@ The pipeline produces four scores per protein:
   components; the RF models are deterministic but depend on the scikit-learn
   version. Pin versions with `environment.yml` files if exact reproducibility
   is critical.
+
+---
+## About this project
+
+BIOINF-farma is part of the **[Bioinf-farma lab network](https://immunohub.it/bioinf-farma-lab-network/)**,
+a computational infrastructure of the **[ImmunoHUB consortium](https://immunohub.it/)**
+dedicated to the rational selection of vaccine antigens.
+
+The platform supports the identification and selection of vaccine
+candidates from genomic and proteomic data, integrating immunogenicity
+prediction (epitope mapping) with producibility assessment (solubility
+and stability prediction) of recombinant antigens in heterologous
+expression systems.
+
+The core pipeline is developed at the **"The Protein Factory 2.0"**
+laboratory (Department of Biotechnology and Life Sciences) and at the
+**"Biochemistry and Functional Proteomics"** research group (Department
+of Science and High Technology) of the **Università degli Studi
+dell'Insubria**.
+
+## Funding
+
+This research was funded by the Italian Ministry of Health through the
+**Immuno-HUB_DSM50** project (T4-CN-02, *"Immunotherapy: Treatment and
+Prevention of Infectious and Tumor Diseases"*, CUP F13C22001110001).
 
 ---
 
