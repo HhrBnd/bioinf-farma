@@ -10,6 +10,13 @@ with Random Forest models to produce a combined expression score.
 
 ---
 
+> 🌐 **Web server**: the pipeline is also available as a user-friendly web
+> interface at **[www.bioinf-farma.uninsubria.it](https://www.bioinf-farma.uninsubria.it)**.
+> No installation required — just upload your PDB or FASTA file.
+
+
+---
+
 ## Table of contents
 
 - [Pipeline overview](#pipeline-overview)
