@@ -39,9 +39,11 @@ with Random Forest models to produce a combined expression score.
 The pipeline accepts `.pdb` and/or `.fasta` files as input. For each input file, it runs:
 
 0. **(optional) Structure prediction** — if the input folder contains
-   `.fasta` files, they are converted to `.pdb` with **Boltz-2**
-   (`0a_structure_prediction.sh`).
-   ⚠️ Requires an internet connection (ColabFold remote MSA generation).
+   `.fasta` files, they are converted to `.pdb` with **Boltz-2** in native
+   mode (`0a_structure_prediction.sh`). The CIF output is converted to PDB
+   format using Biopython.
+   ⚠️ Requires an internet connection (Boltz uses the ColabFold remote
+   MSA server at api.colabfold.com).
 1. **Preprocessing** — structure cleanup with `pdb4amber` and FASTA sequence
    extraction (`1_pdb_to_fasta.sh`).
 2. **B-cell epitope prediction** (`2_epitope_prediction.sh`):
@@ -65,6 +67,7 @@ The pipeline accepts `.pdb` and/or `.fasta` files as input. For each input file,
 - Miniconda or Anaconda
 - AMBER 24 (for `pdb4amber`)
 - `bc`, `awk`, `bash` ≥ 4 (any modern distro)
+- **CUDA-capable GPU** (optional, only required for Step 0 with Boltz-2)
 
 ### Conda environments
 
@@ -112,13 +115,13 @@ and citations.
 
 For Step 0 (optional, only if you start from FASTA):
 
-- **Boltz-2 wrapper** — https://github.com/biochorl/Structure_input_library
 - **Boltz-2** — https://github.com/jwohlwend/boltz
-- **MMseqs2** — https://github.com/soedinglab/MMseqs2
-- Indexed PDB database (~500 MB)
+  Installed inside the `boltz` conda environment (see `envs/boltz.yml`).
+  Boltz uses the public ColabFold MSA server at api.colabfold.com — no
+  local database setup is needed.
 
-> `tools/` and `Structure_input_library/` are in `.gitignore`: they are
-> external tools, not part of this repository.
+> `tools/` is in `.gitignore`: third-party tools are external, not part
+> of this repository.
 
 ### Random Forest models
 
@@ -353,10 +356,12 @@ The pipeline produces four scores per protein:
 
 ## Known limitations
 
-- **Step 0 (Boltz-2) requires internet access.** Boltz calls ColabFold
-  remotely to generate MSAs. Without a connection, Step 0 fails. Workaround:
-  pre-compute the `.pdb` files and skip with `--no-boltz`, or feed them
-  directly as input.
+- **Step 0 (Boltz-2) requires internet access and a GPU.** Boltz calls
+  the ColabFold MSA server at api.colabfold.com to generate MSAs. Without
+  a connection, Step 0 fails. Boltz also strongly benefits from a CUDA
+  GPU; on CPU only, predictions are slow. Workaround: pre-compute the
+  `.pdb` files and skip Step 0 with `--no-boltz`, or feed them directly
+  as input.
 - **REBELOT is not thread-safe across concurrent jobs.** Step 2a uses a
   shared working directory (`tools/epitope_tools/MLCE/rebelot_output/`)
   that gets wiped on every run. Running two pipelines in parallel against
