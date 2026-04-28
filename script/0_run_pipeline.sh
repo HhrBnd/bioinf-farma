@@ -1,33 +1,30 @@
 #!/bin/bash
-# SPDX-License-Identifier: AGPL-3.0-or-later
-# Copyright (C) 2023-2026 Heather Bondi, Gianluca Molla, Università degli Studi dell'Insubria
-
 # ============================================================================
-# 0_run_pipeline.sh — Pipeline principale Bionfarma (CLI)
+# 0_run_pipeline.sh — Bionfarma main pipeline (CLI)
 # ----------------------------------------------------------------------------
-# Uso:
-#   ./0_run_pipeline.sh                            # interattivo, dir da config
-#   ./0_run_pipeline.sh -i <input> -o <o>          # dir esplicite
-#   ./0_run_pipeline.sh -i ./in -o ./out -y        # batch (niente prompt)
-#   ./0_run_pipeline.sh -i ./in -o ./out -y -q     # batch silenzioso (no clear)
+# Usage:
+#   ./0_run_pipeline.sh                            # interactive, dirs from config
+#   ./0_run_pipeline.sh -i <input> -o <o>          # explicit dirs
+#   ./0_run_pipeline.sh -i ./in -o ./out -y        # batch (no prompt)
+#   ./0_run_pipeline.sh -i ./in -o ./out -y -q     # quiet batch (no clear)
 #   ./0_run_pipeline.sh -i ./in -o ./out --no-boltz
 #
-# Input: la cartella -i può contenere .pdb e/o .fasta.
-#        Se ci sono .fasta, lo Step 0 li converte in .pdb con Boltz-2
-#        (serve internet: ColabFold remoto per gli MSA).
+# Input: the -i folder may contain .pdb and/or .fasta files.
+#        If .fasta files are present, Step 0 converts them to .pdb with
+#        Boltz-2 (internet required: ColabFold remote MSA generation).
 #
-# Flag:
-#   -i DIR       cartella con .pdb/.fasta         (default: $INPUT_DIR_DEFAULT)
-#   -o DIR       cartella di output                (default: $OUTPUT_DIR_DEFAULT)
-#   -y           non chiedere conferma finale
-#   -q           non usare `clear`, no header grafici (utile nei log)
-#   --no-boltz   salta lo Step 0 (anche se ci sono .fasta, verranno ignorati)
+# Flags:
+#   -i DIR       folder with .pdb/.fasta          (default: $INPUT_DIR_DEFAULT)
+#   -o DIR       output folder                    (default: $OUTPUT_DIR_DEFAULT)
+#   -y           do not ask for final confirmation
+#   -q           do not use `clear`, no graphic headers (useful in logs)
+#   --no-boltz   skip Step 0 (any .fasta will be ignored)
 #   -h           help
 # ============================================================================
 
 set -eo pipefail
 
-# --- Carica config ----------------------------------------------------------
+# --- Load config ------------------------------------------------------------
 _SELF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 source "$_SELF_DIR/config.sh"
@@ -44,7 +41,8 @@ usage() {
     exit 1
 }
 
-# Parsing a due fasi: prima i long options (getopts non li supporta), poi i short.
+# Two-pass parsing: long options first (getopts does not support them),
+# short options afterwards.
 _ARGS=()
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -64,6 +62,18 @@ while getopts "i:o:yqh" opt; do
         h|*) usage ;;
     esac
 done
+
+# --- Convert paths to absolute ---------------------------------------------
+# Required because some sub-scripts (e.g. 2a) `cd` into other directories.
+mkdir -p "$OUTPUT_BASE_DIR" || {
+    echo -e "\e[1;31m[ERROR]\e[0m Cannot create output directory: $OUTPUT_BASE_DIR" >&2
+    exit 1
+}
+INPUT_DIR="$(cd "${INPUT_DIR%/}" 2>/dev/null && pwd)/" || {
+    echo -e "\e[1;31m[ERROR]\e[0m Input directory not found" >&2
+    exit 1
+}
+OUTPUT_BASE_DIR="$(cd "${OUTPUT_BASE_DIR%/}" && pwd)/"
 
 # --- UI helpers -------------------------------------------------------------
 print_header() {
@@ -100,7 +110,7 @@ clear_screen() {
 print_final_table() {
     clear_screen
     print_header
-    echo -e "\033[1;34m                        PROCESSED PDBs – RANKED BY ANTIGENICITY\033[0m"
+    echo -e "\033[1;34m                        PROCESSED PDBs - RANKED BY ANTIGENICITY\033[0m"
     echo ""
     echo -e "-------------------------------------------------------------------------------------"
     echo -e "PDB NAME         ANTIGENICITY SCORE     COMBINED EXPRESSION SCORE"
@@ -115,42 +125,42 @@ print_final_table() {
 clear_screen
 print_header
 
-# Verifica input dir
+# Check input directory exists
 if [ ! -d "$INPUT_DIR" ]; then
-    echo -e "\e[1;31m[ERROR]\e[0m Input directory $INPUT_DIR non esiste." >&2
+    echo -e "\e[1;31m[ERROR]\e[0m Input directory $INPUT_DIR does not exist." >&2
     exit 1
 fi
 
 mkdir -p "$OUTPUT_BASE_DIR"
 
-# Definizione dei file TSV di output
+# Define output TSV files
 export INPUT_DIR
 export OUTPUT_BASE_DIR
 export OUTPUT_TSV="${OUTPUT_BASE_DIR}epitope_scores.tsv"
 export COMBINED_TSV="${OUTPUT_BASE_DIR}combined_scores.tsv"
 
-# --- Step 0: FASTA → PDB con Boltz-2 (solo se ci sono .fasta in input) -----
+# --- Step 0: FASTA -> PDB with Boltz-2 (only if .fasta files are present) --
 if [ "$SKIP_BOLTZ" -ne 1 ]; then
     bash "${SCRIPT_DIR}/0a_structure_prediction.sh"
 fi
 
-# Conta i PDB (inclusi quelli appena generati da Boltz)
+# Count PDB files (including those just generated by Boltz)
 shopt -s nullglob
 PDB_FILES=("$INPUT_DIR"*.pdb)
 shopt -u nullglob
 TOTAL_PDB=${#PDB_FILES[@]}
 
 if [ "$TOTAL_PDB" -eq 0 ]; then
-    echo -e "\e[1;31m[ERROR]\e[0m Nessun file .pdb trovato in $INPUT_DIR" >&2
-    echo "   (E nessun .fasta convertibile, oppure Boltz è stato saltato con --no-boltz)" >&2
+    echo -e "\e[1;31m[ERROR]\e[0m No .pdb file found in $INPUT_DIR" >&2
+    echo "   (No convertible .fasta found, or Boltz was skipped via --no-boltz)" >&2
     exit 1
 fi
 
-# Header TSV
+# TSV headers
 printf 'PDB_NAME\tsequence_length\tantigenicity_score\tdensity_antigenicity_score\tkernel_antigenicity_score\n' > "$OUTPUT_TSV"
 printf 'PDB_NAME\tSOLUBILITY_SCORE\tSTABILITY_SCORE\tCOMBINED_SCORE\n' > "$COMBINED_TSV"
 
-# --- Loop sui PDB -----------------------------------------------------------
+# --- Loop over PDBs ---------------------------------------------------------
 CURRENT_PDB=1
 for PDB_PATH in "${PDB_FILES[@]}"; do
     PDB_FILE=$(basename "$PDB_PATH" .pdb)
@@ -172,10 +182,10 @@ for PDB_PATH in "${PDB_FILES[@]}"; do
 
     export PDB_FILE PDB_PATH FASTA_NAME FASTA_PATH OUTPUT_DIR RAW_OUTPUT_CSV
 
-    # Step 1 — PDB → FASTA
+    # Step 1 — PDB -> FASTA
     bash "${SCRIPT_DIR}/1_pdb_to_fasta.sh"
     if [ ! -f "$FASTA_PATH" ]; then
-        echo -e "\e[1;31m[ERROR]\e[0m FASTA non creato: $FASTA_PATH" >&2
+        echo -e "\e[1;31m[ERROR]\e[0m FASTA not created: $FASTA_PATH" >&2
         exit 1
     fi
     echo ""
@@ -183,7 +193,7 @@ for PDB_PATH in "${PDB_FILES[@]}"; do
     # Step 2 — Epitope prediction
     bash "${SCRIPT_DIR}/2_epitope_prediction.sh"
     if [ ! -f "$LOG_PATH" ]; then
-        echo -e "\e[1;31m[ERROR]\e[0m pyBEPPE log non trovato: $LOG_PATH" >&2
+        echo -e "\e[1;31m[ERROR]\e[0m pyBEPPE log not found: $LOG_PATH" >&2
         exit 1
     fi
     echo ""
@@ -195,12 +205,12 @@ for PDB_PATH in "${PDB_FILES[@]}"; do
     CURRENT_PDB=$((CURRENT_PDB + 1))
 done
 
-# --- Messaggio finale -------------------------------------------------------
+# --- Final message ----------------------------------------------------------
 echo -e "\033[1;32m======================================================================================\033[0m"
-echo -e "\033[1;32m¦                  PIPELINE COMPLETED SUCCESSFULLY FOR ALL PDB FILES!                ¦\033[0m"
+echo -e "\033[1;32m|                  PIPELINE COMPLETED SUCCESSFULLY FOR ALL PDB FILES!                |\033[0m"
 echo -e "\033[1;32m======================================================================================\033[0m"
 
-# Prompt interattivo (saltato con -y)
+# Interactive prompt (skipped with -y)
 if [ "$ASSUME_YES" -eq 1 ]; then
     print_final_table
     exit 0
