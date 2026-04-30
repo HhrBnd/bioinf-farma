@@ -3,13 +3,15 @@
 **Computational pipeline to score protein antigens for vaccine development:
 antigenicity, solubility, and thermal stability.**
 
-Developed by Heather Bondi and Gianluca Molla
-(_The Protein Factory 2.0_, _Biochemistry and Functional Proteomics_,
-University of Insubria) within the [ImmunoHUB](https://immunohub.it)
-consortium.
 
-A web interface is publicly available at
+
+**Part of the [![ImmunoHub](https://immunohub.it/wp-content/uploads/LogoImmunoHub-300x40.png)](https://immunohub.it/) consortium, 
+[Bioinf-farma lab network](https://immunohub.it/bioinf-farma-lab-network/).**
+
+>A web interface is publicly available at
 [bioinf-farma.uninsubria.it](https://www.bioinf-farma.uninsubria.it).
+> No installation required
+> just upload your PDB or FASTA file.
 
 
 ## Pipeline overview
@@ -158,11 +160,11 @@ licenses; users are responsible for complying with each.
 
 ## Contact
 
-- **Heather Bondi** - heather.bondi@uninsubria.it
-- **Gianluca Molla** - gianluca.molla@uninsubria.it
+- **Heather Bondi** - heather.bondi@uninsubria.it - Department of Science and High Technology, University of Insubria, Como, Italy
+- **Gianluca Molla** - gianluca.molla@uninsubria.it - Department of Biotechnology and Life Sciences, University of Insubria, Varese, Italy 
 
-University of Insubria, Department of Biotechnology and Life Sciences,
-Via J.H. Dunant 3, 21100 Varese, Italy.
+
+
 
 ## Acknowledgments
 
