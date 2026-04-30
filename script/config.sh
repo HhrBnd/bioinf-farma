@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# config.sh — Centralized configuration for the entire pipeline
+# config.sh - Centralized configuration for the entire pipeline
 # ----------------------------------------------------------------------------
 # Every pipeline script does `source config.sh` at the top.
 # Each variable is OVERRIDABLE via env, for example:
@@ -30,7 +30,7 @@ export LOG_DIR="${LOG_DIR:-$PIPELINE_BASE_DIR/logs}"
 # --- Conda -----------------------------------------------------------------
 export CONDA_ROOT="${CONDA_ROOT:-$PIPELINE_HOME/miniconda3}"
 # Environment names (renamable via env)
-export CONDA_ENV_MAIN="${CONDA_ENV_MAIN:-vs_immunohub}"      # feature_prediction + ag_score
+export CONDA_ENV_MAIN="${CONDA_ENV_MAIN:-vs_immunohub}"      # feature_prediction + ag_score + structure_predictor
 export CONDA_ENV_BOLTZ="${CONDA_ENV_BOLTZ:-boltz}"           # Boltz-2 (step 0: FASTA->PDB)
 export CONDA_ENV_REBELOT="${CONDA_ENV_REBELOT:-rebelot}"     # MLCE/REBELOT (step 2a)
 export CONDA_ENV_BEPIPRED="${CONDA_ENV_BEPIPRED:-bepipred}"  # BepiPred3     (step 2b)
@@ -45,11 +45,22 @@ export AMBERHOME="${AMBERHOME:-$TOOLS_DIR/epitope_tools/MLCE/amber24}"
 export PDB4AMBER="${PDB4AMBER:-$AMBERHOME/bin/pdb4amber}"
 
 # --- Boltz-2 / structure prediction (step 0) -------------------------------
-# NB: Boltz-2 requires an internet connection (remote ColabFold for MSAs).
+# NB: structure_predictor.py contacts the ColabFold MSA server
+# (api.colabfold.com) and may also query AlphaFold DB and RCSB.
+# An internet connection is therefore required at runtime.
 export STRUCTURE_DIR="${STRUCTURE_DIR:-$PIPELINE_HOME/Structure_input_library}"
-export STRUCTURE_PREDICTOR_SCRIPT="${STRUCTURE_PREDICTOR_SCRIPT:-$STRUCTURE_DIR/structure_predictor_docker.py}"
 export MMSEQS_BIN="${MMSEQS_BIN:-$STRUCTURE_DIR/mmseqs/bin}"
-export PDB_DB_DIR="${PDB_DB_DIR:-PDB}"  # relative to STRUCTURE_DIR when cd'd into it
+
+# Local PDB database (MMseqs2-formatted). Required for the PDB lookup.
+# If not present, structure_predictor.py skips the PDB lookup and goes
+# straight to the next stage.
+export PDB_DB="${PDB_DB:-$STRUCTURE_DIR/PDB}"
+
+# Optional: local UniProtKB database (MMseqs2-formatted, e.g. SwissProt or
+# the larger UniProtKB-TrEMBL). If not set or pointing to a non-existent
+# path, the AlphaFold lookup is skipped and the script goes directly from
+# PDB lookup to Boltz-2.
+export UNIPROT_DB="${UNIPROT_DB:-}"
 
 # --- MLCE / REBELOT (step 2a) ----------------------------------------------
 export MLCE_DIR="${MLCE_DIR:-$TOOLS_DIR/epitope_tools/MLCE}"
