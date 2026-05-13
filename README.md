@@ -13,15 +13,22 @@
 
 ## Pipeline overview
 
-The pipeline accepts protein sequences (FASTA) or 3D structures (PDB)
-and produces, for each input antigen, three machine-learning derived
-scores:
+Candidates can be submitted as amino acid sequences (FASTA) or
+three-dimensional structures (PDB). For each candidate, the pipeline
+produces four protein-level scores:
 
-| Score | Range | Tools combined |
+| Score | Range | What it estimates |
 |---|---|---|
-| **Antigenicity** | 0 - 1 | MLCE / REBELOT / BEPPE + BepiPred-3.0 |
-| **Solubility** | 0 - 1 | DeepSoluE + SoluProt + Protein-Sol -> RandomForest |
-| **Thermal stability** | 0 - 1 | BertThermo + TemStaPro + ProLaTherm -> RandomForest |
+| **Antigenicity Score** | 0 – 1 | Combined B-cell epitope signal (structure-based + sequence-based) |
+| **Solubility Score** | 0 – 1 | Probability of soluble expression (RF meta-learner over 3 tools) |
+| **Stability Score** | 0 – 1 | Probability of thermal stability (RF meta-learner over 3 tools) |
+| **Expression Efficiency Score (EES)** | 0 – 1 | Weighted combination of solubility and stability |
+
+A central contribution of BIOINF-farma is the use of **supervised Random
+Forest meta-learners** that integrate the outputs of multiple predictors
+into more reliable, protein-level scores than any standalone method.
+
+
 
 ### Steps
 
@@ -165,7 +172,9 @@ licenses; users are responsible for complying with each.
 
 ## Acknowledgments
 
-This work has been carried out within the [ImmunoHUB](https://immunohub.it)
-consortium, funded by the European Union - NextGenerationEU through the
-Italian Ministry of University and Research (MUR) under the National
-Recovery and Resilience Plan (PNRR).
+This work was supported by the Italian Ministry of Health, project
+"Immunoterapia: cura e prevenzione di malattie infettive e tumorali
+(Immuno-HUB)", project number T4-CN-02.
+
+The pipeline was developed within the [ImmunoHUB](https://immunohub.it)
+consortium.
