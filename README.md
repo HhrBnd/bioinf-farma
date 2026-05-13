@@ -1,9 +1,6 @@
 # BIOINF-farma pipeline
 
-**Computational pipeline to score protein antigens for vaccine development:
-antigenicity, solubility, and thermal stability.**
-
-
+**A machine learning platform for antigen selection.**
 
 **Part of the [![ImmunoHub](https://immunohub.it/wp-content/uploads/LogoImmunoHub-300x40.png)](https://immunohub.it/) consortium, 
 [Bioinf-farma lab network](https://immunohub.it/bioinf-farma-lab-network/).**
