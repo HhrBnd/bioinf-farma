@@ -1,5 +1,4 @@
-BIOINF-farma: a pipeline for the prediction of antigenicity, solubility,
-and stability of protein antigens.
+BIOINF-farma: a machine learning platform for antigen selection
 
 Copyright (C) 2023-2026 Heather Bondi, Gianluca Molla, Università degli Studi dell'Insubria
 
