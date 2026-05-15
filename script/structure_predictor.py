@@ -28,7 +28,7 @@ its own conda env via 'conda run -n <env>'.
 
 Originally based on 'structure_predictor.py' from
     https://github.com/biochorl/Structure_input_library
-    Copyright (c) Marco Marchetti - Licensed under the MIT License.
+    Copyright (c) Marco Orlando - Licensed under the MIT License.
 
 Adapted for the BIOINF-farma pipeline (Universita degli Studi dell'Insubria,
 ImmunoHUB consortium, 2026): removed hardcoded paths, added --no_uniprot,
